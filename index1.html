@@ -135,27 +135,35 @@
       justify-content: center;
       align-items: center;
     }
-    .cyber-icon {
-      width: 350px;
-      height: 350px;
-      background: var(--accent);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 150px;
-      color: var(--bg);
-      position: relative;
-      animation: pulse 3s infinite;
-    }
-    .cyber-icon::before {
-      content: '';
-      position: absolute;
-      inset: -20px;
-      border: 2px dashed var(--primary);
-      border-radius: 50%;
-      animation: rotate 20s linear infinite;
-    }
+.cyber-icon {
+  width: 350px;
+  height: 350px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  animation: pulse 3s infinite;
+  overflow: hidden; /* Ensures the image doesn't spill outside the circle */
+}
+
+.cyber-icon img.shield-img {
+  width: 60%;       /* Adjust this percentage (50-80%) to control image size inside the circle */
+  height: auto;
+  object-fit: contain; /* Keeps proportions without distortion */
+  border-radius: 50%;  /* Optional: makes the image itself circular if it's not already */
+  /* Remove font-size and color since they're no longer needed for an image */
+}
+
+.cyber-icon::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  border: 2px dashed var(--primary);
+  border-radius: 50%;
+  animation: rotate 20s linear infinite;
+}
     @keyframes pulse {
       0%, 100% { box-shadow: 0 0 0 0 rgba(91, 204, 218, 0.4); }
       50% { box-shadow: 0 0 60px 30px rgba(91, 204, 218, 0.1); }
