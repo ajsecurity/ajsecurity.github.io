@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us — AJSecurity</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --bg: #0b2851;
+      --primary: #5bccda;
+      --secondary: #277bad;
+      --card: #0d3161;
+      --accent: linear-gradient(135deg, var(--primary), var(--secondary));
+      --glass-border: rgba(91, 204, 218, 0.25);
+      --muted: rgba(255, 255, 255, 0.7);
+      --text: #e8f4f8;
+      --maxwidth: 1200px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background:
+        radial-gradient(800px 400px at 10% 10%, rgba(39, 123, 173, 0.3), transparent),
+        radial-gradient(600px 300px at 90% 80%, rgba(91, 204, 218, 0.15), transparent),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    a { text-decoration: none; color: inherit; }
+    .container { width: 100%; max-width: var(--maxwidth); margin: 0 auto; padding: 0 20px; }
+
+    /* Navbar */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(11, 40, 81, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 15px 0;
+    }
+    .nav-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--bg);
+      font-size: 22px;
+    }
+    .brand-text h1 {
+      font-size: 20px;
+      color: var(--primary);
+      font-weight: 800;
+    }
+    .brand-text span {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--muted);
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--primary); }
+    .btn {
+      background: var(--accent);
+      padding: 12px 24px;
+      border-radius: 10px;
+      color: var(--bg);
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: inline-block;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(91, 204, 218, 0.3);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+    }
+    .mobile-menu { display: none; font-size: 24px; cursor: pointer; color: var(--primary); }
+
+    /* Page Header */
+    .page-header {
+      padding: 140px 0 60px;
+      text-align: center;
+      background: linear-gradient(180deg, rgba(13, 49, 97, 0.5), transparent);
+    }
+    .page-header h1 {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+    .page-header h1 span { color: var(--primary); }
+    .page-header p {
+      color: var(--muted);
+      font-size: 18px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .breadcrumb {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .breadcrumb a { color: var(--primary); }
+
+    /* Section Styles */
+    section { padding: 80px 0; }
+    .section-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .section-header h2 {
+      font-size: 36px;
+      margin-bottom: 15px;
+    }
+    .section-header h2 span { color: var(--primary); }
+    .section-header p { color: var(--muted); max-width: 600px; margin: 0 auto; }
+
+    /* About Story */
+    .story-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .story-image {
+      position: relative;
+    }
+    .story-image-main {
+      width: 100%;
+      height: 400px;
+      background: var(--accent);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 120px;
+      color: var(--bg);
+    }
+    .story-badge {
+      position: absolute;
+      bottom: -20px;
+      right: -20px;
+      background: var(--card);
+      border: 2px solid var(--primary);
+      padding: 20px 30px;
+      border-radius: 16px;
+      text-align: center;
+    }
+    .story-badge h3 {
+      font-size: 36px;
+      color: var(--primary);
+    }
+    .story-badge p {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .story-content h2 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+    .story-content h2 span { color: var(--primary); }
+    .story-content p {
+      color: var(--muted);
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    .story-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 25px;
+    }
+    .story-feature {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .story-feature i {
+      color: var(--primary);
+      font-size: 18px;
+    }
+
+    /* Mission Vision Values */
+    .mvv-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+    .mvv-card {
+      background: linear-gradient(180deg, rgba(13, 49, 97, 0.8), rgba(11, 40, 81, 0.6));
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 40px 30px;
+      text-align: center;
+      transition: transform 0.3s;
+    }
+    .mvv-card:hover { transform: translateY(-10px); }
+    .mvv-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 35px;
+      color: var(--bg);
+      margin: 0 auto 25px;
+    }
+    .mvv-card h3 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: var(--primary);
+    }
+    .mvv-card p {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    /* Team Section */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+    }
+    .team-card {
+      background: linear-gradient(180deg, rgba(13, 49, 97, 0.8), rgba(11, 40, 81, 0.6));
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+      transition: transform 0.3s;
+    }
+    .team-card:hover { transform: translateY(-10px); }
+    .team-avatar {
+      width: 120px;
+      height: 120px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 50px;
+      color: var(--bg);
+      margin: 0 auto 20px;
+    }
+    .team-card h4 {
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+    .team-card .role {
+      color: var(--primary);
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+    .team-card p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 15px;
+    }
+    .team-social {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .team-social a {
+      width: 35px;
+      height: 35px;
+      background: var(--card);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      transition: all 0.3s;
+    }
+    .team-social a:hover {
+      background: var(--primary);
+      color: var(--bg);
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3px;
+      height: 100%;
+      background: var(--glass-border);
+    }
+    .timeline-item {
+      display: flex;
+      justify-content: flex-end;
+      padding-right: 50%;
+      position: relative;
+      margin-bottom: 40px;
+    }
+    .timeline-item:nth-child(even) {
+      justify-content: flex-start;
+      padding-right: 0;
+      padding-left: 50%;
+    }
+    .timeline-content {
+      background: linear-gradient(180deg, rgba(13, 49, 97, 0.8), rgba(11, 40, 81, 0.6));
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 25px;
+      width: calc(100% - 40px);
+    }
+    .timeline-item:nth-child(even) .timeline-content {
+      margin-left: 40px;
+    }
+    .timeline-item:nth-child(odd) .timeline-content {
+      margin-right: 40px;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 20px;
+      background: var(--primary);
+      border-radius: 50%;
+      border: 4px solid var(--bg);
+    }
+    .timeline-content h4 {
+      color: var(--primary);
+      margin-bottom: 5px;
+    }
+    .timeline-content h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    .timeline-content p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* Certifications */
+    .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 25px;
+    }
+    .cert-item {
+      background: rgba(13, 49, 97, 0.6);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 30px 20px;
+      text-align: center;
+      transition: transform 0.3s;
+    }
+    .cert-item:hover { transform: scale(1.05); }
+    .cert-item i {
+      font-size: 40px;
+      color: var(--primary);
+      margin-bottom: 15px;
+    }
+    .cert-item h4 {
+      font-size: 14px;
+    }
+
+    /* Stats Banner */
+    .stats-banner {
+      background: var(--accent);
+      padding: 60px 0;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+      text-align: center;
+    }
+    .stat-item h3 {
+      font-size: 48px;
+      color: var(--bg);
+      font-weight: 800;
+    }
+    .stat-item p {
+      color: rgba(11, 40, 81, 0.8);
+      font-size: 14px;
+    }
+
+    /* CTA */
+    .cta-section {
+      text-align: center;
+      padding: 80px 0;
+    }
+    .cta-section h2 {
+      font-size: 36px;
+      margin-bottom: 15px;
+    }
+    .cta-section h2 span { color: var(--primary); }
+    .cta-section p {
+      color: var(--muted);
+      margin-bottom: 30px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(5, 20, 40, 0.9);
+      padding: 60px 0 30px;
+      border-top: 1px solid var(--glass-border);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+    .footer-brand h3 {
+      color: var(--primary);
+      font-size: 22px;
+      margin-bottom: 15px;
+    }
+    .footer-brand p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+    .social-links {
+      display: flex;
+      gap: 12px;
+    }
+    .social-links a {
+      width: 40px;
+      height: 40px;
+      background: var(--card);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      transition: background 0.3s;
+    }
+    .social-links a:hover {
+      background: var(--primary);
+      color: var(--bg);
+    }
+    .footer-col h4 {
+      color: var(--primary);
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 10px; }
+    .footer-col a {
+      color: var(--muted);
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+    .footer-col a:hover { color: var(--primary); }
+    .footer-bottom {
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid var(--glass-border);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .story-section { grid-template-columns: 1fr; }
+      .mvv-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .cert-grid { grid-template-columns: repeat(3, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .mobile-menu { display: block; }
+      .page-header h1 { font-size: 32px; }
+      .team-grid { grid-template-columns: 1fr; }
+      .cert-grid { grid-template-columns: repeat(2, 1fr); }
+      .timeline::before { left: 20px; }
+      .timeline-item, .timeline-item:nth-child(even) {
+        padding-left: 50px;
+        padding-right: 0;
+        justify-content: flex-start;
+      }
+      .timeline-item .timeline-content,
+      .timeline-item:nth-child(even) .timeline-content {
+        margin-left: 0;
+        margin-right: 0;
+      }
+      .timeline-dot { left: 20px; }
+      .cta-buttons { flex-direction: column; align-items: center; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav>
+    <div class="container nav-content">
+      <a href="index.html" class="brand">
+        <div class="logo"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="brand-text">
+          <h1>AJSecurity</h1>
+          <span>Defend. Detect. Dominate.</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html" class="active">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="courses.html">Courses</a></li>
+        <li><a href="blog.html">Blog</a></li>
+      </ul>
+      <a href="contact.html" class="btn">Contact Us</a>
+      <div class="mobile-menu"><i class="fa-solid fa-bars"></i></div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="container">
+      <h1>About <span>AJSecurity</span></h1>
+      <p>Leading the way in cybersecurity education and enterprise security solutions since 2018</p>
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span>/</span>
+        <span>About Us</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Story -->
+  <section>
+    <div class="container story-section">
+      <div class="story-image">
+        <div class="story-image-main">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div class="story-badge">
+          <h3>6+</h3>
+          <p>Years of Excellence</p>
+        </div>
+      </div>
+      <div class="story-content">
+        <h2>Our <span>Story</span></h2>
+        <p>Founded in 2018, AJSecurity emerged from a vision to bridge the massive cybersecurity skills gap in the industry. Our founders, seasoned security professionals with decades of combined experience, recognized that traditional education wasn't keeping pace with evolving cyber threats.</p>
+        <p>What started as a small training initiative has grown into a comprehensive cybersecurity institute, serving hundreds of students and dozens of enterprise clients across the globe. Our hands-on approach to security education sets us apart.</p>
+        <p>Today, we're proud to be recognized as a leading cybersecurity training provider, known for our practical curriculum, expert instructors, and industry-relevant certifications.</p>
+        <div class="story-features">
+          <div class="story-feature">
+            <i class="fa-solid fa-check-circle"></i>
+            <span>Industry Certified</span>
+          </div>
+          <div class="story-feature">
+            <i class="fa-solid fa-check-circle"></i>
+            <span>Expert Instructors</span>
+          </div>
+          <div class="story-feature">
+            <i class="fa-solid fa-check-circle"></i>
+            <span>Hands-on Labs</span>
+          </div>
+          <div class="story-feature">
+            <i class="fa-solid fa-check-circle"></i>
+            <span>Career Support</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission, Vision, Values -->
+  <section style="background: rgba(13, 49, 97, 0.3);">
+    <div class="container">
+      <div class="section-header">
+        <h2>Mission, Vision & <span>Values</span></h2>
+        <p>The principles that guide everything we do</p>
+      </div>
+      <div class="mvv-grid">
+        <div class="mvv-card">
+          <div class="mvv-icon"><i class="fa-solid fa-rocket"></i></div>
+          <h3>Our Mission</h3>
+          <p>To democratize cybersecurity education and empower individuals and organizations with the knowledge and skills needed to defend against evolving digital threats. We believe everyone deserves access to quality security training.</p>
+        </div>
+        <div class="mvv-card">
+          <div class="mvv-icon"><i class="fa-solid fa-eye"></i></div>
+          <h3>Our Vision</h3>
+          <p>To become the global leader in cybersecurity education and services, creating a safer digital world by training the next generation of security professionals and protecting businesses from cyber threats.</p>
+        </div>
+        <div class="mvv-card">
+          <div class="mvv-icon"><i class="fa-solid fa-heart"></i></div>
+          <h3>Our Values</h3>
+          <p>Excellence in everything we do. Integrity in our practices. Innovation in our methods. Community in our approach. We're committed to ethical hacking and responsible disclosure.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Banner -->
+  <section class="stats-banner">
+    <div class="container stats-grid">
+      <div class="stat-item">
+        <h3>500+</h3>
+        <p>Students Trained</p>
+      </div>
+      <div class="stat-item">
+        <h3>50+</h3>
+        <p>Enterprise Clients</p>
+      </div>
+      <div class="stat-item">
+        <h3>15+</h3>
+        <p>Expert Instructors</p>
+      </div>
+      <div class="stat-item">
+        <h3>98%</h3>
+        <p>Success Rate</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Team -->
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <h2>Meet Our <span>Team</span></h2>
+        <p>Industry experts dedicated to your success in cybersecurity</p>
+      </div>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-avatar"><i class="fa-solid fa-user"></i></div>
+          <h4>Alex Johnson</h4>
+          <p class="role">Founder & CEO</p>
+          <p>15+ years in cybersecurity. Former Security Lead at Fortune 500 companies. CISSP, CEH, OSCP certified.</p>
+          <div class="team-social">
+            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+          </div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar"><i class="fa-solid fa-user"></i></div>
+          <h4>Sarah Chen</h4>
+          <p class="role">Head of Training</p>
+          <p>PhD in Computer Science. Specialized in malware analysis and reverse engineering. 10+ years teaching experience.</p>
+          <div class="team-social">
+            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+          </div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar"><i class="fa-solid fa-user"></i></div>
+          <h4>Mike Roberts</h4>
+          <p class="role">Lead Penetration Tester</p>
+          <p>Expert in network and web application security. Bug bounty hunter with 200+ reported vulnerabilities.</p>
+          <div class="team-social">
+            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+          </div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar"><i class="fa-solid fa-user"></i></div>
+          <h4>Lisa Park</h4>
+          <p class="role">Cloud Security Specialist</p>
+          <p>AWS and Azure certified. Specializes in cloud infrastructure security and DevSecOps practices.</p>
+          <div class="team-social">
+            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Journey Timeline -->
+  <section style="background: rgba(13, 49, 97, 0.3);">
+    <div class="container">
+      <div class="section-header">
+        <h2>Our <span>Journey</span></h2>
+        <p>Key milestones in our growth story</p>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h4>2018</h4>
+            <h3>Foundation</h3>
+            <p>AJSecurity was founded with a vision to provide quality cybersecurity education. Started with just 2 courses and 20 students.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h4>2019</h4>
+            <h3>First Enterprise Client</h3>
+            <p>Secured our first corporate training contract. Expanded team to 5 instructors and launched penetration testing services.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h4>2020</h4>
+            <h3>Online Platform Launch</h3>
+            <p>Launched our online learning platform, reaching students globally. Introduced virtual labs for hands-on practice.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h4>2022</h4>
+            <h3>Industry Recognition</h3>
+            <p>Received recognition as a top cybersecurity training provider. Crossed 300+ trained professionals milestone.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h4>2024</h4>
+            <h3>Expansion</h3>
+            <p>Expanded to 15+ courses, 50+ enterprise clients, and 500+ trained students. Launched advanced certification programs.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Certifications & Partnerships -->
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <h2>Certifications & <span>Partnerships</span></h2>
+        <p>Recognized and trusted by industry leaders</p>
+      </div>
+      <div class="cert-grid">
+        <div class="cert-item">
+          <i class="fa-solid fa-certificate"></i>
+          <h4>CISSP Partner</h4>
+        </div>
+        <div class="cert-item">
+          <i class="fa-solid fa-award"></i>
+          <h4>CEH Authorized</h4>
+        </div>
+        <div class="cert-item">
+          <i class="fa-solid fa-shield-halved"></i>
+          <h4>CompTIA Partner</h4>
+        </div>
+        <div class="cert-item">
+          <i class="fa-brands fa-aws"></i>
+          <h4>AWS Partner</h4>
+        </div>
+        <div class="cert-item">
+          <i class="fa-brands fa-microsoft"></i>
+          <h4>Microsoft Partner</h4>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section" style="background: rgba(13, 49, 97, 0.3);">
+    <div class="container">
+      <h2>Ready to Start Your <span>Cybersecurity Journey?</span></h2>
+      <p>Join our community of security professionals and take your career to the next level</p>
+      <div class="cta-buttons">
+        <a href="courses.html" class="btn">Explore Courses</a>
+        <a href="contact.html" class="btn btn-outline">Contact Us</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3><i class="fa-solid fa-shield-halved"></i> AJSecurity</h3>
+          <p>Leading cybersecurity institute providing world-class training and security solutions. Empowering individuals and organizations to defend against cyber threats.</p>
+          <div class="social-links">
+            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="courses.html">Courses</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="faq.html">FAQs</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Student Portal</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:info@ajsecurity.com"><i class="fa-solid fa-envelope"></i> info@ajsecurity.com</a></li>
+            <li><a href="tel:+8801234567890"><i class="fa-solid fa-phone"></i> +880 1234 567890</a></li>
+            <li><a href="#"><i class="fa-solid fa-location-dot"></i> Dhaka, Bangladesh</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 AJSecurity. All Rights Reserved. | Defend. Detect. Dominate.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const navLinks = document.querySelector('.nav-links');
+    
+    mobileMenu.addEventListener('click', () => {
+      if (navLinks.style.display === 'flex') {
+        navLinks.style.display = 'none';
+      } else {
+        navLinks.style.display = 'flex';
+        navLinks.style.flexDirection = 'column';
+        navLinks.style.position = 'absolute';
+        navLinks.style.top = '70px';
+        navLinks.style.right = '20px';
+        navLinks.style.background = 'rgba(11, 40, 81, 0.98)';
+        navLinks.style.padding = '20px';
+        navLinks.style.borderRadius = '12px';
+        navLinks.style.border = '1px solid rgba(91, 204, 218, 0.25)';
+      }
+    });
+  </script>
+</body>
+</html>
