@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — AJSecurity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --bg-primary: #050c18;
+      --bg-secondary: #080f1e;
+      --bg-card: rgba(10, 20, 40, 0.7);
+      --bg-glass: rgba(0, 255, 200, 0.04);
+      --neon-cyan: #00ffe0;
+      --neon-blue: #00b4ff;
+      --neon-purple: #8b5cf6;
+      --neon-pink: #ff00aa;
+      --neon-green: #39ff14;
+      --text-primary: #e2f0ff;
+      --text-secondary: rgba(200, 220, 255, 0.6);
+      --text-muted: rgba(150, 180, 220, 0.4);
+      --border: rgba(0, 255, 200, 0.15);
+      --border-strong: rgba(0, 255, 200, 0.35);
+      --glow: 0 0 20px rgba(0, 255, 200, 0.3);
+      --glow-strong: 0 0 40px rgba(0, 255, 200, 0.5), 0 0 80px rgba(0, 180, 255, 0.2);
+      --gradient-main: linear-gradient(135deg, #00ffe0, #00b4ff);
+      --gradient-card: linear-gradient(160deg, rgba(0,255,200,0.08) 0%, rgba(0,100,200,0.05) 100%);
+      --error: #ff5f57;
+      --success: #39ff14;
+      --maxwidth: 940px;
+      --transition: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    [data-theme="light"] {
+      --bg-primary: #f0f4ff;
+      --bg-secondary: #e8eeff;
+      --bg-card: rgba(255,255,255,0.75);
+      --bg-glass: rgba(0,100,255,0.04);
+      --neon-cyan: #0055cc;
+      --neon-blue: #003399;
+      --neon-purple: #5522bb;
+      --neon-pink: #bb0077;
+      --neon-green: #005522;
+      --text-primary: #080f2a;
+      --text-secondary: rgba(8,15,60,0.65);
+      --text-muted: rgba(8,15,60,0.38);
+      --border: rgba(0,70,200,0.14);
+      --border-strong: rgba(0,70,200,0.32);
+      --glow: 0 0 20px rgba(0,70,200,0.15);
+      --glow-strong: 0 0 40px rgba(0,70,200,0.22), 0 0 80px rgba(0,100,255,0.1);
+      --gradient-main: linear-gradient(135deg, #0055cc, #003399);
+      --gradient-card: linear-gradient(160deg, rgba(0,70,200,0.06) 0%, rgba(0,50,150,0.03) 100%);
+      --error: #cc2200;
+      --success: #006622;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      transition: background 0.4s var(--transition), color 0.4s var(--transition);
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* BG */
+    .bg-canvas {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+    }
+    .bg-orb {
+      position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.12;
+      animation: orbFloat 12s ease-in-out infinite;
+    }
+    .bg-orb:nth-child(1) { width: 500px; height: 500px; background: var(--neon-cyan); top: -150px; right: -100px; }
+    .bg-orb:nth-child(2) { width: 350px; height: 350px; background: var(--neon-blue); bottom: 0; left: 0; animation-delay: -6s; }
+    @keyframes orbFloat { 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(20px,-30px); } }
+    .bg-grid {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, transparent 70%);
+    }
+    [data-theme="dark"] body::after {
+      content: ''; position: fixed; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+      pointer-events: none; z-index: 9999;
+    }
+
+    .container { width: 100%; max-width: var(--maxwidth); margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+    /* HEADER */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(5,12,24,0.9);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(24px) saturate(180%);
+      transition: all 0.4s var(--transition);
+    }
+    [data-theme="light"] header { background: rgba(240,244,255,0.9); }
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px; max-width: var(--maxwidth); margin: 0 auto;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .logo-wrap {
+      width: 42px; height: 42px; border-radius: 11px;
+      background: var(--gradient-main);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: #050c18; box-shadow: var(--glow);
+      transition: box-shadow 0.3s;
+    }
+    .brand:hover .logo-wrap { box-shadow: var(--glow-strong); }
+    .brand-text .name {
+      font-family: 'Orbitron', monospace; font-size: 17px; font-weight: 900;
+      background: var(--gradient-main); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 1px;
+    }
+    .brand-text .tagline { font-size: 10px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase; }
+
+    .header-actions { display: flex; gap: 10px; align-items: center; }
+    .theme-toggle {
+      width: 40px; height: 40px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--bg-glass);
+      color: var(--neon-cyan); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; font-size: 15px;
+      transition: all 0.3s var(--transition);
+    }
+    .theme-toggle:hover { border-color: var(--border-strong); box-shadow: var(--glow); }
+    .btn-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 18px; border-radius: 10px;
+      background: transparent; border: 1px solid var(--border);
+      color: var(--text-secondary); font-size: 13px; font-weight: 500;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all 0.3s var(--transition);
+    }
+    .btn-back:hover { border-color: var(--border-strong); color: var(--neon-cyan); box-shadow: var(--glow); background: var(--bg-glass); }
+
+    /* PAGE HERO */
+    .page-hero {
+      padding: 60px 0 40px;
+      text-align: center;
+    }
+    .page-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 16px; border-radius: 20px;
+      border: 1px solid var(--border); background: var(--bg-glass);
+      color: var(--neon-cyan); font-size: 11px;
+      font-family: 'JetBrains Mono', monospace; letter-spacing: 2px;
+      text-transform: uppercase; margin-bottom: 20px; backdrop-filter: blur(10px);
+      animation: fadeSlideUp 0.6s var(--transition) both;
+    }
+    .page-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(28px, 5vw, 48px); font-weight: 900; line-height: 1.2;
+      margin-bottom: 14px;
+      animation: fadeSlideUp 0.6s 0.1s var(--transition) both;
+    }
+    .page-title .highlight {
+      background: var(--gradient-main); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+      filter: drop-shadow(0 0 16px rgba(0,255,200,0.4));
+    }
+    .page-subtitle {
+      color: var(--text-secondary); font-size: 15px; max-width: 500px; margin: 0 auto;
+      animation: fadeSlideUp 0.6s 0.2s var(--transition) both;
+    }
+    @keyframes fadeSlideUp { from{opacity:0;transform:translateY(24px);} to{opacity:1;transform:translateY(0);} }
+
+    /* INFO CARDS */
+    .info-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+      margin-bottom: 32px;
+      animation: fadeSlideUp 0.6s 0.3s var(--transition) both;
+    }
+    .info-card {
+      background: var(--gradient-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 22px 18px; text-align: center;
+      backdrop-filter: blur(12px); transition: all 0.3s var(--transition);
+    }
+    .info-card:hover { border-color: var(--border-strong); transform: translateY(-4px); box-shadow: var(--glow); }
+    .info-card .info-icon {
+      font-size: 28px; color: var(--neon-cyan); margin-bottom: 10px;
+      display: block; transition: all 0.3s;
+    }
+    .info-card:hover .info-icon { text-shadow: 0 0 16px var(--neon-cyan); }
+    .info-card h4 { font-family: 'Orbitron', monospace; font-size: 12px; font-weight: 700; margin-bottom: 6px; letter-spacing: 1px; }
+    .info-card p { color: var(--text-secondary); font-size: 13px; }
+    .info-card a { color: var(--neon-cyan); transition: opacity 0.3s; }
+    .info-card a:hover { opacity: 0.8; }
+
+    /* TAB SWITCHER */
+    .tab-wrap {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 6px; display: flex; gap: 6px;
+      margin-bottom: 24px; backdrop-filter: blur(16px);
+      animation: fadeSlideUp 0.6s 0.35s var(--transition) both;
+    }
+    .tab-btn {
+      flex: 1; padding: 16px 20px; border-radius: 12px;
+      border: none; background: transparent; cursor: pointer;
+      color: var(--text-secondary); font-size: 14px; font-weight: 600;
+      font-family: 'Orbitron', monospace; letter-spacing: 0.5px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: all 0.35s var(--transition); position: relative; overflow: hidden;
+    }
+    .tab-btn::before {
+      content: ''; position: absolute; inset: 0;
+      background: var(--gradient-main); opacity: 0; transition: opacity 0.35s;
+    }
+    .tab-btn i, .tab-btn span { position: relative; z-index: 1; }
+    .tab-btn:hover { color: var(--neon-cyan); }
+    .tab-btn.active { color: #050c18; box-shadow: var(--glow); }
+    .tab-btn.active::before { opacity: 1; }
+
+    /* FORM CARD */
+    .form-outer {
+      background: var(--gradient-card); border: 1px solid var(--border);
+      border-radius: 22px; overflow: hidden; backdrop-filter: blur(16px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: fadeSlideUp 0.6s 0.4s var(--transition) both;
+      position: relative;
+    }
+    .form-outer::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: var(--gradient-main); box-shadow: var(--glow);
+    }
+
+    /* Form Panel */
+    .form-panel { display: none; }
+    .form-panel.active { display: block; }
+    .form-header {
+      padding: 28px 32px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start; gap: 16px;
+    }
+    .form-header-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: var(--gradient-main);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; color: #050c18; flex-shrink: 0;
+      box-shadow: var(--glow);
+    }
+    .form-header-text h3 { font-family: 'Orbitron', monospace; font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+    .form-header-text p { color: var(--text-secondary); font-size: 13px; line-height: 1.6; }
+
+    form {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      padding: 28px 32px;
+    }
+    .fg { display: flex; flex-direction: column; }
+    .fg.full { grid-column: 1 / -1; }
+    label {
+      font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono', monospace;
+      color: var(--neon-cyan); margin-bottom: 8px; letter-spacing: 1px;
+      text-transform: uppercase; display: flex; align-items: center; gap: 6px;
+    }
+    label .req { color: var(--error); }
+
+    input, select, textarea {
+      width: 100%; padding: 13px 16px;
+      border-radius: 12px; border: 1px solid var(--border);
+      background: rgba(5,12,24,0.6); color: var(--text-primary);
+      font-size: 14px; font-family: 'Inter', sans-serif;
+      outline: none; transition: all 0.3s var(--transition);
+      backdrop-filter: blur(8px);
+    }
+    [data-theme="light"] input, [data-theme="light"] select, [data-theme="light"] textarea {
+      background: rgba(255,255,255,0.6);
+    }
+    input::placeholder, textarea::placeholder { color: var(--text-muted); }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--border-strong);
+      box-shadow: var(--glow), inset 0 0 0 1px rgba(0,255,200,0.1);
+      background: rgba(5,12,24,0.8);
+    }
+    [data-theme="light"] input:focus, [data-theme="light"] select:focus, [data-theme="light"] textarea:focus {
+      background: rgba(255,255,255,0.85);
+    }
+    input:hover:not(:focus), select:hover:not(:focus), textarea:hover:not(:focus) { border-color: var(--border-strong); }
+    textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+    select {
+      cursor: pointer; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2300ffe0' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 14px center;
+    }
+    select option { background: #080f1e; color: var(--text-primary); }
+    [data-theme="light"] select option { background: #e8eeff; }
+
+    /* Checkbox Pills */
+    .check-group { grid-column: 1 / -1; }
+    .check-label-title {
+      font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono', monospace;
+      color: var(--neon-cyan); margin-bottom: 10px; letter-spacing: 1px;
+      text-transform: uppercase; display: flex; align-items: center; gap: 6px;
+    }
+    .pills { display: flex; flex-wrap: wrap; gap: 10px; }
+    .pill {
+      display: flex; align-items: center; gap: 8px;
+      padding: 9px 16px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--bg-card);
+      cursor: pointer; transition: all 0.3s var(--transition);
+      font-size: 13px; color: var(--text-secondary); user-select: none;
+    }
+    .pill:hover { border-color: var(--border-strong); color: var(--text-primary); }
+    .pill input[type="checkbox"] { display: none; }
+    .pill-dot {
+      width: 14px; height: 14px; border-radius: 4px;
+      border: 1px solid var(--border); background: transparent;
+      transition: all 0.3s; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 9px;
+    }
+    .pill.checked { border-color: var(--border-strong); color: var(--neon-cyan); background: rgba(0,255,200,0.07); box-shadow: var(--glow); }
+    .pill.checked .pill-dot { background: var(--neon-cyan); border-color: var(--neon-cyan); color: #050c18; }
+
+    /* Submit Row */
+    .submit-row {
+      grid-column: 1 / -1;
+      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+      padding-top: 8px; border-top: 1px solid var(--border);
+    }
+    .btn-submit {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 32px; border-radius: 12px;
+      background: var(--gradient-main); color: #050c18;
+      font-weight: 800; font-size: 14px; border: none; cursor: pointer;
+      font-family: 'Orbitron', monospace; letter-spacing: 0.5px;
+      transition: all 0.3s var(--transition); position: relative; overflow: hidden;
+    }
+    .btn-submit::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.25), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: var(--glow-strong); }
+    .btn-submit:hover::before { opacity: 1; }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-submit .spinner {
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 2px solid rgba(5,12,24,0.3); border-top-color: #050c18;
+      animation: spin 0.8s linear infinite; display: none;
+    }
+    .btn-submit.loading .spinner { display: block; }
+    .btn-submit.loading .btn-txt { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .btn-clear {
+      padding: 13px 22px; border-radius: 12px;
+      background: transparent; border: 1px solid var(--border);
+      color: var(--text-secondary); font-size: 13px;
+      font-family: 'Orbitron', monospace; cursor: pointer;
+      transition: all 0.3s var(--transition); font-weight: 600;
+    }
+    .btn-clear:hover { border-color: var(--border-strong); color: var(--text-primary); box-shadow: var(--glow); }
+
+    .status-msg {
+      font-size: 13px; font-family: 'JetBrains Mono', monospace;
+      padding: 8px 14px; border-radius: 8px;
+      display: none; align-items: center; gap: 8px;
+    }
+    .status-msg.show { display: inline-flex; }
+    .status-msg.success { color: var(--success); background: rgba(57,255,20,0.08); border: 1px solid rgba(57,255,20,0.2); }
+    .status-msg.error { color: var(--error); background: rgba(255,95,87,0.08); border: 1px solid rgba(255,95,87,0.2); }
+    .status-msg.loading { color: var(--neon-cyan); background: rgba(0,255,200,0.06); border: 1px solid var(--border); }
+
+    /* Footer */
+    footer {
+      text-align: center; padding: 30px 0 24px;
+      color: var(--text-muted); font-size: 13px;
+      border-top: 1px solid var(--border); margin-top: 50px;
+      position: relative; z-index: 1;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    footer a { color: var(--neon-cyan); }
+    footer a:hover { opacity: 0.8; }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      form { grid-template-columns: 1fr; }
+      .info-grid { grid-template-columns: 1fr; }
+      .tab-btn span { display: none; }
+      .form-header { flex-direction: column; }
+      .submit-row { flex-direction: column; align-items: stretch; }
+      .btn-submit, .btn-clear { width: 100%; justify-content: center; }
+    }
+    @media (max-width: 480px) {
+      form { padding: 20px 18px; }
+      .form-header { padding: 22px 18px 16px; }
+      .page-title { font-size: 26px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-canvas"><div class="bg-orb"></div><div class="bg-orb"></div></div>
+  <div class="bg-grid"></div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="brand">
+        <div class="logo-wrap"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="brand-text">
+          <div class="name">AJSecurity</div>
+          <div class="tagline">Defend · Detect · Dominate</div>
+        </div>
+      </a>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeBtn" title="Toggle Theme">
+          <i class="fa-solid fa-moon" id="themeIcon"></i>
+        </button>
+        <a href="index.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- PAGE HERO -->
+    <div class="page-hero">
+      <div class="page-badge"><i class="fa-solid fa-satellite-dish"></i> Establish Contact</div>
+      <h1 class="page-title">Get in <span class="highlight">Touch</span></h1>
+      <p class="page-subtitle">Choose your purpose below. We respond within 24 hours across all channels.</p>
+    </div>
+
+    <!-- INFO CARDS -->
+    <div class="info-grid">
+      <div class="info-card">
+        <i class="info-icon fa-solid fa-envelope"></i>
+        <h4>Email</h4>
+        <p><a href="mailto:info@ajsecurity.com">info@ajsecurity.com</a></p>
+      </div>
+      <div class="info-card">
+        <i class="info-icon fa-brands fa-whatsapp"></i>
+        <h4>WhatsApp</h4>
+        <p><a href="https://wa.me/8801234567890">+880 1234 567890</a></p>
+      </div>
+      <div class="info-card">
+        <i class="info-icon fa-solid fa-location-dot"></i>
+        <h4>Location</h4>
+        <p>Dhaka, Bangladesh</p>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tab-wrap">
+      <button class="tab-btn active" data-tab="student">
+        <i class="fa-solid fa-user-graduate"></i><span>Join as Student</span>
+      </button>
+      <button class="tab-btn" data-tab="business">
+        <i class="fa-solid fa-building"></i><span>Hire Our Experts</span>
+      </button>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="form-outer">
+
+      <!-- STUDENT FORM -->
+      <div class="form-panel active" id="panel-student">
+        <div class="form-header">
+          <div class="form-header-icon"><i class="fa-solid fa-user-graduate"></i></div>
+          <div class="form-header-text">
+            <h3>Student Enrollment</h3>
+            <p>Interested in our cybersecurity courses? Fill out your details and our team will guide you through the enrollment process.</p>
+          </div>
+        </div>
+        <form id="sForm" novalidate>
+          <div class="fg">
+            <label><i class="fa-solid fa-user"></i> Full Name <span class="req">*</span></label>
+            <input type="text" id="sName" placeholder="Enter your full name" required>
+          </div>
+          <div class="fg">
+            <label><i class="fa-solid fa-envelope"></i> Email Address <span class="req">*</span></label>
+            <input type="email" id="sEmail" placeholder="you@example.com" required>
+          </div>
+          <div class="fg">
+            <label><i class="fa-brands fa-whatsapp"></i> WhatsApp <span class="req">*</span></label>
+            <input type="tel" id="sWhatsapp" placeholder="+880 1234 567890" required>
+          </div>
+          <div class="fg">
+            <label><i class="fa-solid fa-school"></i> Institute / University <span class="req">*</span></label>
+            <input type="text" id="sInstitute" placeholder="Your current institution" required>
+          </div>
+          <div class="fg">
+            <label><i class="fa-solid fa-graduation-cap"></i> Education Level <span class="req">*</span></label>
+            <select id="sEdu" required>
+              <option value="">Select your level</option>
+              <option>High School</option>
+              <option>Undergraduate</option>
+              <option>Graduate</option>
+              <option>Working Professional</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label><i class="fa-solid fa-globe"></i> Country <span class="req">*</span></label>
+            <input type="text" id="sCountry" placeholder="Your country" required>
+          </div>
+          <div class="check-group full">
+            <div class="check-label-title"><i class="fa-solid fa-book-open"></i> Courses Interested In <span class="req">*</span></div>
+            <div class="pills" id="sCourses">
+              <label class="pill"><input type="checkbox" value="Ethical Hacking"><span class="pill-dot"><i class="fa-solid fa-check"></i></span> Ethical Hacking</label>
+              <label class="pill"><input type="checkbox" value="Network Security"><span class="pill-dot"><i class="fa-solid fa-check"></i></span> Network Security</label>
+              <label class="pill"><input type="checkbox" value="Cloud Security"><span class="pill-dot"><i class="fa-solid fa-check"></i></span> Cloud Security</label>
+              <label class="pill"><input type="checkbox" value="Mobile Security"><span class="pill-dot"><i class="fa-solid fa-check"></i></span> Mobile Security</label>
+              <label class="pill"><input type="checkbox" value="Web Security"><span class="pill-dot"><i class="fa-solid fa-check"></i></span> Web Security</label>
+              <label class="pill"><input type="checkbox" value="Malware Analysis"><span class="pill-dot"><i class="fa-solid fa-check"></i></span> Malware Analysis</label>
+            </div>
+          </div>
+          <div class="fg full">
+            <label><i class="fa-solid fa-comment"></i> Message (Optional)</label>
+            <textarea id="sMsg" placeholder="Any questions or additional information..."></textarea>
+          </div>
+          <div class="submit-row full">
+            <button type="submit" class="btn-submit" id="sBtn">
+              <div class="spinner"></div>
+              <span class="btn-txt"><i class="fa-solid fa-paper-plane"></i> Submit Application</span>
+            </button>
+            <button type="button" class="btn-clear" onclick="resetForm('sForm')"><i class="fa-solid fa-rotate-left"></i> Clear</button>
+            <span class="status-msg" id="sStatus"></span>
+          </div>
+        </form>
+      </div>
+
+      <!-- BUSINESS FORM -->
+      <div class="form-panel" id="panel-business">
+        <div class="form-header">
+          <div class="form-header-icon"><i class="fa-solid fa-briefcase"></i></div>
+          <div class="form-header-text">
+            <h3>Hire Security Experts</h3>
+            <p>Need professional cybersecurity services for your organization? Tell us about your requirements and we'll propose a custom solution.</p>
+          </div>
+        </div>
+        <form id="bForm" novalidate>
+          <div class="fg">
+            <label><i class="fa-solid fa-building"></i> Company Name <span class="req">*</span></label>
+            <input type="text" id="bCompany" placeholder="Your company name" required>
+          </div>
+          <div class="fg">
+            <label><i class="fa-solid fa-user-tie"></i> Contact Person <span class="req">*</span></label>
+            <input type="text" id="bContact" placeholder="Your full name" required>
+          </div>
+          <div class="fg">
+            <label><i class="fa-solid fa-envelope"></i> Business Email <span class="req">*</span></label>
+            <input type="email" id="bEmail" placeholder="company@example.com" required>
+          </div>
+          <div class="fg">
+            <label><i class="fa-brands fa-whatsapp"></i> Phone / WhatsApp <span class="req">*</span></label>
+            <input type="tel" id="bPhone" placeholder="+880 1234 567890" required>
+          </div>
+          <div class="fg">
+            <label><i class="fa-solid fa-globe"></i> Company Website</label>
+            <input type="url" id="bWebsite" placeholder="https://yourcompany.com">
+          </div>
+          <div class="fg">
+            <label><i class="fa-solid fa-industry"></i> Industry <span class="req">*</span></label>
+            <select id="bIndustry" required>
+              <option value="">Select industry</option>
+              <option>Finance & Banking</option>
+              <option>Healthcare</option>
+              <option>Technology</option>
+              <option>E-commerce</option>
+              <option>Government</option>
+              <option>Education</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="check-group full">
+            <div class="check-label-title"><i class="fa-solid fa-shield-halved"></i> Services Required <span class="req">*</span></div>
+            <div class="pills" id="bServices">
+              <label class="pill"><input type="checkbox" value="Penetration Testing"><span class="pill-dot"><i class="fa-solid fa-check"></i></span> Penetration Testing</label>
+              <label class="pill"><input type="checkbox" value="Security Audit"><span class="pill-dot"><i class="fa-solid fa-check"></i></span> Security Audit</label>
+              <label class="pill"><input type="checkbox" value="Incident Response"><span class="pill-dot"><i class="fa-solid fa-check"></i></span> Incident Response</label>
+              <label class="pill"><input type="checkbox" value="Vulnerability Assessment"><span class="pill-dot"><i class="fa-solid fa-check"></i></span> Vuln. Assessment</label>
+              <label class="pill"><input type="checkbox" value="Security Consulting"><span class="pill-dot"><i class="fa-solid fa-check"></i></span> Consulting</label>
+              <label class="pill"><input type="checkbox" value="Employee Training"><span class="pill-dot"><i class="fa-solid fa-check"></i></span> Staff Training</label>
+            </div>
+          </div>
+          <div class="fg">
+            <label><i class="fa-solid fa-dollar-sign"></i> Budget Range</label>
+            <select id="bBudget">
+              <option value="">Select range</option>
+              <option>$1,000 – $5,000</option>
+              <option>$5,000 – $15,000</option>
+              <option>$15,000 – $50,000</option>
+              <option>$50,000+</option>
+              <option>Prefer to Discuss</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label><i class="fa-solid fa-clock"></i> Project Timeline</label>
+            <select id="bTimeline">
+              <option value="">Select timeline</option>
+              <option>Urgent (1–2 weeks)</option>
+              <option>Short-term (1 month)</option>
+              <option>Medium-term (1–3 months)</option>
+              <option>Long-term (3+ months)</option>
+              <option>Ongoing Partnership</option>
+            </select>
+          </div>
+          <div class="fg full">
+            <label><i class="fa-solid fa-file-lines"></i> Project Details (Optional)</label>
+            <textarea id="bMsg" placeholder="Describe your security requirements, current challenges, or specific concerns..."></textarea>
+          </div>
+          <div class="submit-row full">
+            <button type="submit" class="btn-submit" id="bBtn">
+              <div class="spinner"></div>
+              <span class="btn-txt"><i class="fa-solid fa-paper-plane"></i> Submit Request</span>
+            </button>
+            <button type="button" class="btn-clear" onclick="resetForm('bForm')"><i class="fa-solid fa-rotate-left"></i> Clear</button>
+            <span class="status-msg" id="bStatus"></span>
+          </div>
+        </form>
+      </div>
+    </div><!-- end form-outer -->
+
+    <footer>
+      <p>© 2025 <a href="index.html">AJSecurity</a>. All Rights Reserved. | Defend · Detect · Dominate</p>
+    </footer>
+  </div>
+
+  <script>
+    // ─── THEME ───
+    const html = document.documentElement;
+    const themeBtn = document.getElementById('themeBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const saved = localStorage.getItem('ajsec-theme') || 'dark';
+    html.setAttribute('data-theme', saved);
+    updateIcon(saved);
+    themeBtn.addEventListener('click', () => {
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('ajsec-theme', next);
+      updateIcon(next);
+    });
+    function updateIcon(t) { themeIcon.className = t === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon'; }
+
+    // ─── TABS ───
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // ─── PILLS ───
+    document.querySelectorAll('.pill').forEach(pill => {
+      const cb = pill.querySelector('input[type="checkbox"]');
+      cb.addEventListener('change', () => pill.classList.toggle('checked', cb.checked));
+    });
+
+    // ─── HELPERS ───
+    function resetForm(id) {
+      document.getElementById(id).reset();
+      document.querySelectorAll('.pill').forEach(p => p.classList.remove('checked'));
+    }
+    function setStatus(id, msg, type) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.className = 'status-msg show ' + type;
+    }
+    function getChecked(groupId) {
+      return [...document.querySelectorAll('#' + groupId + ' input[type="checkbox"]:checked')]
+        .map(c => c.value).join(', ') || '';
+    }
+    function dt() {
+      return new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka', dateStyle: 'full', timeStyle: 'short' });
+    }
+    async function sendTelegram(msg, statusId, btnId, formId) {
+      const BOT = '8576606695:AAEhvL4UI9cozs_DyXqNrQgvIbKccSvaBQ4';
+      const CHAT = '5357462296';
+      const btn = document.getElementById(btnId);
+      btn.classList.add('loading'); btn.disabled = true;
+      setStatus(statusId, 'Transmitting...', 'loading');
+      try {
+        const r = await fetch(`https://api.telegram.org/bot${BOT}/sendMessage`, {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ chat_id: CHAT, text: msg, parse_mode: 'HTML' })
+        });
+        if (r.ok) {
+          setStatus(statusId, '✔ Submitted! We\'ll contact you soon.', 'success');
+          resetForm(formId);
+        } else throw new Error();
+      } catch {
+        setStatus(statusId, '⚠ Please try again or email us directly.', 'error');
+      } finally { btn.classList.remove('loading'); btn.disabled = false; }
+    }
+
+    // ─── STUDENT FORM ───
+    document.getElementById('sForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const name = document.getElementById('sName').value.trim();
+      const email = document.getElementById('sEmail').value.trim();
+      const wa = document.getElementById('sWhatsapp').value.trim();
+      const inst = document.getElementById('sInstitute').value.trim();
+      const edu = document.getElementById('sEdu').value;
+      const country = document.getElementById('sCountry').value.trim();
+      const courses = getChecked('sCourses');
+      const msg = document.getElementById('sMsg').value.trim() || 'No message';
+      if (!name || !email || !wa || !inst || !edu || !country) { setStatus('sStatus','❌ Fill in all required fields.','error'); return; }
+      if (!courses) { setStatus('sStatus','❌ Select at least one course.','error'); return; }
+      const tMsg = `🎓 <b>NEW STUDENT APPLICATION</b>\n━━━━━━━━━━━━━━━━━━━━━\n\n👤 <b>Name:</b> ${name}\n📧 <b>Email:</b> ${email}\n📱 <b>WhatsApp:</b> ${wa}\n🏫 <b>Institute:</b> ${inst}\n📚 <b>Education:</b> ${edu}\n🌍 <b>Country:</b> ${country}\n\n📖 <b>Courses:</b>\n${courses}\n\n💬 <b>Message:</b>\n${msg}\n\n⏰ <b>Submitted:</b> ${dt()}\n━━━━━━━━━━━━━━━━━━━━━\n🔐 AJSecurity Student Portal`;
+      await sendTelegram(tMsg, 'sStatus', 'sBtn', 'sForm');
+    });
+
+    // ─── BUSINESS FORM ───
+    document.getElementById('bForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const company = document.getElementById('bCompany').value.trim();
+      const contact = document.getElementById('bContact').value.trim();
+      const email = document.getElementById('bEmail').value.trim();
+      const phone = document.getElementById('bPhone').value.trim();
+      const website = document.getElementById('bWebsite').value.trim() || 'Not provided';
+      const industry = document.getElementById('bIndustry').value;
+      const services = getChecked('bServices');
+      const budget = document.getElementById('bBudget').value || 'Not specified';
+      const timeline = document.getElementById('bTimeline').value || 'Not specified';
+      const msg = document.getElementById('bMsg').value.trim() || 'No details';
+      if (!company || !contact || !email || !phone || !industry) { setStatus('bStatus','❌ Fill in all required fields.','error'); return; }
+      if (!services) { setStatus('bStatus','❌ Select at least one service.','error'); return; }
+      const tMsg = `🏢 <b>NEW BUSINESS INQUIRY</b>\n━━━━━━━━━━━━━━━━━━━━━\n\n🏛️ <b>Company:</b> ${company}\n👤 <b>Contact:</b> ${contact}\n📧 <b>Email:</b> ${email}\n📱 <b>Phone:</b> ${phone}\n🌐 <b>Website:</b> ${website}\n🏭 <b>Industry:</b> ${industry}\n\n🛡️ <b>Services:</b>\n${services}\n\n💰 <b>Budget:</b> ${budget}\n⏱️ <b>Timeline:</b> ${timeline}\n\n📝 <b>Details:</b>\n${msg}\n\n⏰ <b>Submitted:</b> ${dt()}\n━━━━━━━━━━━━━━━━━━━━━\n🔐 AJSecurity Business Portal`;
+      await sendTelegram(tMsg, 'bStatus', 'bBtn', 'bForm');
+    });
+  </script>
+</body>
+</html>
