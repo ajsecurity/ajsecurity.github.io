@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AJSecurity — Cybersecurity Training & Solutions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --bg-primary: #050c18;
+      --bg-secondary: #080f1e;
+      --bg-card: rgba(10, 20, 40, 0.7);
+      --bg-glass: rgba(0, 255, 200, 0.04);
+      --neon-cyan: #00ffe0;
+      --neon-blue: #00b4ff;
+      --neon-purple: #8b5cf6;
+      --neon-pink: #ff00aa;
+      --neon-green: #39ff14;
+      --text-primary: #e2f0ff;
+      --text-secondary: rgba(200, 220, 255, 0.6);
+      --text-muted: rgba(150, 180, 220, 0.4);
+      --border: rgba(0, 255, 200, 0.15);
+      --border-strong: rgba(0, 255, 200, 0.35);
+      --glow: 0 0 20px rgba(0, 255, 200, 0.3);
+      --glow-strong: 0 0 40px rgba(0, 255, 200, 0.5), 0 0 80px rgba(0, 180, 255, 0.2);
+      --gradient-main: linear-gradient(135deg, #00ffe0, #00b4ff);
+      --gradient-card: linear-gradient(160deg, rgba(0,255,200,0.08) 0%, rgba(0,100,200,0.05) 100%);
+      --maxwidth: 1200px;
+      --transition: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    [data-theme="light"] {
+      --bg-primary: #f0f4ff;
+      --bg-secondary: #e8eeff;
+      --bg-card: rgba(255,255,255,0.7);
+      --bg-glass: rgba(0,100,255,0.04);
+      --neon-cyan: #0066cc;
+      --neon-blue: #0044aa;
+      --neon-purple: #6633cc;
+      --neon-pink: #cc0088;
+      --neon-green: #006633;
+      --text-primary: #0a1628;
+      --text-secondary: rgba(10,30,80,0.65);
+      --text-muted: rgba(10,30,80,0.4);
+      --border: rgba(0,80,200,0.15);
+      --border-strong: rgba(0,80,200,0.35);
+      --glow: 0 0 20px rgba(0,80,200,0.18);
+      --glow-strong: 0 0 40px rgba(0,80,200,0.22), 0 0 80px rgba(0,120,255,0.1);
+      --gradient-main: linear-gradient(135deg, #0066cc, #0044aa);
+      --gradient-card: linear-gradient(160deg, rgba(0,80,200,0.06) 0%, rgba(0,60,150,0.04) 100%);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: background 0.4s var(--transition), color 0.4s var(--transition);
+    }
+
+    /* Animated Background */
+    .bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .bg-canvas canvas { width: 100%; height: 100%; }
+    .bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.15;
+      animation: orbFloat 12s ease-in-out infinite;
+    }
+    .bg-orb:nth-child(1) { width: 600px; height: 600px; background: var(--neon-cyan); top: -200px; left: -100px; animation-delay: 0s; }
+    .bg-orb:nth-child(2) { width: 400px; height: 400px; background: var(--neon-blue); bottom: 0; right: -100px; animation-delay: -4s; }
+    .bg-orb:nth-child(3) { width: 300px; height: 300px; background: var(--neon-purple); top: 50%; left: 50%; animation-delay: -8s; }
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -40px) scale(1.05); }
+      66% { transform: translate(-20px, 20px) scale(0.95); }
+    }
+
+    /* Grid overlay */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.4) 0%, transparent 70%);
+    }
+
+    /* Scanline effect (dark only) */
+    [data-theme="dark"] body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    .container { width: 100%; max-width: var(--maxwidth); margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+    /* ─── NAVBAR ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 0;
+      transition: all 0.4s var(--transition);
+    }
+    nav.scrolled .nav-inner {
+      background: rgba(5,12,24,0.92);
+      border-bottom-color: var(--border-strong);
+      backdrop-filter: blur(24px) saturate(180%);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4), inset 0 -1px 0 var(--border);
+    }
+    [data-theme="light"] nav.scrolled .nav-inner { background: rgba(240,244,255,0.92); }
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      max-width: var(--maxwidth);
+      margin: 0 auto;
+      border-bottom: 1px solid transparent;
+      backdrop-filter: blur(4px);
+      transition: all 0.4s var(--transition);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+    }
+    .logo-wrap {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: var(--gradient-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #050c18;
+      position: relative;
+      box-shadow: var(--glow);
+      transition: box-shadow 0.3s;
+    }
+    .logo-wrap::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 14px;
+      background: var(--gradient-main);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .brand:hover .logo-wrap { box-shadow: var(--glow-strong); }
+    .brand:hover .logo-wrap::after { opacity: 0.5; }
+    .brand-text .name {
+      font-family: 'Orbitron', monospace;
+      font-size: 18px;
+      font-weight: 900;
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 1px;
+    }
+    .brand-text .tagline { font-size: 10px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase; }
+
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      list-style: none;
+      align-items: center;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      transition: all 0.3s var(--transition);
+      position: relative;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 4px; left: 50%; right: 50%;
+      height: 1px;
+      background: var(--neon-cyan);
+      transition: all 0.3s var(--transition);
+      box-shadow: 0 0 8px var(--neon-cyan);
+    }
+    .nav-links a:hover { color: var(--neon-cyan); background: rgba(0,255,200,0.06); }
+    .nav-links a:hover::after { left: 16px; right: 16px; }
+
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-glass);
+      color: var(--neon-cyan);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all 0.3s var(--transition);
+      backdrop-filter: blur(10px);
+    }
+    .theme-toggle:hover { border-color: var(--border-strong); box-shadow: var(--glow); background: rgba(0,255,200,0.1); }
+
+    .btn-primary {
+      padding: 10px 22px;
+      border-radius: 10px;
+      background: var(--gradient-main);
+      color: #050c18;
+      font-weight: 700;
+      font-size: 13px;
+      border: none;
+      cursor: pointer;
+      font-family: 'Orbitron', monospace;
+      letter-spacing: 0.5px;
+      transition: all 0.3s var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--glow-strong); }
+    .btn-primary:hover::before { opacity: 1; }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-outline {
+      padding: 10px 22px;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--neon-cyan);
+      font-weight: 700;
+      font-size: 13px;
+      border: 1px solid var(--border-strong);
+      cursor: pointer;
+      font-family: 'Orbitron', monospace;
+      letter-spacing: 0.5px;
+      transition: all 0.3s var(--transition);
+      backdrop-filter: blur(10px);
+    }
+    .btn-outline:hover { background: rgba(0,255,200,0.1); box-shadow: var(--glow); transform: translateY(-2px); }
+
+    .mobile-toggle { display: none; cursor: pointer; color: var(--neon-cyan); font-size: 22px; padding: 8px; }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 80px;
+      position: relative;
+    }
+    .hero-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--bg-glass);
+      color: var(--neon-cyan);
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      backdrop-filter: blur(10px);
+      animation: fadeSlideUp 0.8s var(--transition) both;
+    }
+    .hero-eyebrow .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--neon-cyan);
+      box-shadow: 0 0 8px var(--neon-cyan);
+      animation: blink 2s infinite;
+    }
+    @keyframes blink { 0%,100%{ opacity:1; } 50%{ opacity:0.2; } }
+
+    .hero-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(36px, 5vw, 62px);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      animation: fadeSlideUp 0.8s 0.1s var(--transition) both;
+    }
+    .hero-title .line1 { display: block; color: var(--text-primary); }
+    .hero-title .line2 {
+      display: block;
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 20px rgba(0,255,200,0.4));
+    }
+    .hero-title .line3 { display: block; color: var(--text-primary); }
+
+    .hero-desc {
+      color: var(--text-secondary);
+      font-size: 16px;
+      margin-bottom: 36px;
+      max-width: 480px;
+      line-height: 1.8;
+      animation: fadeSlideUp 0.8s 0.2s var(--transition) both;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      animation: fadeSlideUp 0.8s 0.3s var(--transition) both;
+    }
+    .hero-cta .btn-primary, .hero-cta .btn-outline { padding: 14px 28px; font-size: 14px; }
+
+    /* Hero Terminal */
+    .hero-visual {
+      position: relative;
+      animation: fadeSlideUp 0.8s 0.15s var(--transition) both;
+    }
+    .terminal-card {
+      background: rgba(5,12,24,0.85);
+      border: 1px solid var(--border-strong);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--glow), 0 40px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px);
+      position: relative;
+    }
+    [data-theme="light"] .terminal-card { background: rgba(240,244,255,0.85); }
+    .terminal-card::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 21px;
+      background: var(--gradient-main);
+      z-index: -1;
+      opacity: 0.3;
+      filter: blur(8px);
+    }
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(0,0,0,0.2);
+    }
+    [data-theme="light"] .terminal-header { background: rgba(0,0,0,0.05); }
+    .terminal-dots { display: flex; gap: 6px; }
+    .terminal-dots span {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+    }
+    .terminal-dots span:nth-child(1) { background: #ff5f57; }
+    .terminal-dots span:nth-child(2) { background: #febc2e; }
+    .terminal-dots span:nth-child(3) { background: #28c840; }
+    .terminal-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+    .terminal-body {
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      min-height: 280px;
+    }
+    .t-line {
+      display: block;
+      margin-bottom: 6px;
+      opacity: 0;
+      animation: terminalReveal 0.4s var(--transition) forwards;
+    }
+    .t-line:nth-child(1) { animation-delay: 0.5s; }
+    .t-line:nth-child(2) { animation-delay: 1.0s; }
+    .t-line:nth-child(3) { animation-delay: 1.5s; }
+    .t-line:nth-child(4) { animation-delay: 2.0s; }
+    .t-line:nth-child(5) { animation-delay: 2.5s; }
+    .t-line:nth-child(6) { animation-delay: 3.0s; }
+    .t-line:nth-child(7) { animation-delay: 3.5s; }
+    .t-line:nth-child(8) { animation-delay: 4.0s; }
+    .t-line:nth-child(9) { animation-delay: 4.5s; }
+    @keyframes terminalReveal {
+      from { opacity:0; transform: translateX(-8px); }
+      to { opacity:1; transform: translateX(0); }
+    }
+    .t-prompt { color: var(--neon-cyan); }
+    .t-cmd { color: var(--text-primary); }
+    .t-output { color: var(--neon-green); padding-left: 16px; font-size: 12px; }
+    .t-warn { color: #febc2e; padding-left: 16px; font-size: 12px; }
+    .t-danger { color: #ff5f57; padding-left: 16px; font-size: 12px; }
+    .t-cursor {
+      display: inline-block;
+      width: 8px; height: 14px;
+      background: var(--neon-cyan);
+      vertical-align: middle;
+      animation: cursorBlink 1s steps(1) infinite;
+    }
+    @keyframes cursorBlink { 0%,100%{ opacity:1; } 50%{ opacity:0; } }
+
+    /* Shield visual */
+    .shield-wrap {
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 100px;
+      height: 100px;
+    }
+    .shield-ring {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid var(--neon-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      animation: ringPulse 3s ease-in-out infinite;
+      box-shadow: 0 0 20px var(--neon-cyan), inset 0 0 20px rgba(0,255,200,0.1);
+    }
+    @keyframes ringPulse { 0%,100%{ transform:scale(1); opacity:1; } 50%{ transform:scale(1.1); opacity:0.7; } }
+    .shield-ring i { color: var(--neon-cyan); font-size: 36px; }
+
+    /* ─── STATS ─── */
+    .stats {
+      padding: 60px 0;
+      position: relative;
+    }
+    .stats::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--bg-glass);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      position: relative;
+    }
+    .stat-item {
+      text-align: center;
+      padding: 30px 20px;
+      position: relative;
+    }
+    .stat-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 20%; bottom: 20%;
+      width: 1px;
+      background: var(--border);
+    }
+    .stat-num {
+      font-family: 'Orbitron', monospace;
+      font-size: 48px;
+      font-weight: 900;
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 10px rgba(0,255,200,0.3));
+      display: block;
+    }
+    .stat-label { color: var(--text-secondary); font-size: 13px; letter-spacing: 1px; text-transform: uppercase; font-family: 'JetBrains Mono', monospace; margin-top: 4px; }
+
+    /* ─── SECTION HEADERS ─── */
+    section { padding: 100px 0; position: relative; }
+    .section-header { text-align: center; margin-bottom: 60px; }
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--bg-glass);
+      color: var(--neon-cyan);
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      backdrop-filter: blur(10px);
+    }
+    .section-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    .section-title .highlight {
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .section-desc { color: var(--text-secondary); max-width: 520px; margin: 0 auto; font-size: 15px; line-height: 1.8; }
+
+    /* ─── SERVICES ─── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .service-card {
+      background: var(--gradient-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 28px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s var(--transition);
+      cursor: default;
+      backdrop-filter: blur(10px);
+      group: true;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gradient-main);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .service-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--gradient-main);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s var(--transition);
+    }
+    .service-card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-8px);
+      box-shadow: var(--glow), 0 30px 60px rgba(0,0,0,0.3);
+    }
+    .service-card:hover::after { transform: scaleX(1); }
+    .service-icon-wrap {
+      width: 60px; height: 60px;
+      border-radius: 16px;
+      background: var(--bg-glass);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      color: var(--neon-cyan);
+      margin-bottom: 20px;
+      transition: all 0.4s var(--transition);
+      position: relative;
+    }
+    .service-card:hover .service-icon-wrap {
+      background: var(--gradient-main);
+      color: #050c18;
+      border-color: transparent;
+      box-shadow: var(--glow-strong);
+    }
+    .service-card h3 {
+      font-family: 'Orbitron', monospace;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+    .service-card p { color: var(--text-secondary); font-size: 14px; line-height: 1.7; }
+    .service-arrow {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      color: var(--neon-cyan);
+      font-size: 16px;
+      opacity: 0;
+      transform: translateX(-8px);
+      transition: all 0.3s var(--transition);
+    }
+    .service-card:hover .service-arrow { opacity: 1; transform: translateX(0); }
+
+    /* ─── COURSES ─── */
+    .courses-section { background: var(--bg-glass); }
+    .courses-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .course-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      display: flex;
+      gap: 22px;
+      align-items: flex-start;
+      transition: all 0.4s var(--transition);
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+    }
+    .course-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: var(--gradient-main);
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 0.4s var(--transition);
+    }
+    .course-card:hover { border-color: var(--border-strong); transform: translateX(6px); box-shadow: var(--glow); }
+    .course-card:hover::before { transform: scaleY(1); }
+    .course-icon-wrap {
+      width: 72px; height: 72px;
+      border-radius: 18px;
+      background: var(--gradient-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      color: #050c18;
+      flex-shrink: 0;
+      box-shadow: var(--glow);
+      transition: all 0.3s;
+    }
+    .course-card:hover .course-icon-wrap { transform: scale(1.08) rotate(4deg); box-shadow: var(--glow-strong); }
+    .course-info h3 { font-family: 'Orbitron', monospace; font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .course-info p { color: var(--text-secondary); font-size: 13px; line-height: 1.7; margin-bottom: 16px; }
+    .course-meta { display: flex; gap: 16px; flex-wrap: wrap; }
+    .course-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-glass);
+      color: var(--neon-cyan);
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ─── WHY US ─── */
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .why-card {
+      padding: 36px 24px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--gradient-card);
+      text-align: center;
+      transition: all 0.4s var(--transition);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+    .why-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 1px;
+      background: var(--gradient-main);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .why-card:hover { transform: translateY(-8px); border-color: var(--border-strong); box-shadow: var(--glow), 0 20px 40px rgba(0,0,0,0.2); }
+    .why-card:hover::before { opacity: 1; }
+    .why-icon {
+      font-size: 36px;
+      color: var(--neon-cyan);
+      margin-bottom: 16px;
+      display: block;
+      transition: all 0.3s;
+    }
+    .why-card:hover .why-icon { text-shadow: 0 0 20px var(--neon-cyan), 0 0 40px var(--neon-cyan); transform: scale(1.1); }
+    .why-card h4 { font-family: 'Orbitron', monospace; font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+    .why-card p { color: var(--text-secondary); font-size: 13px; line-height: 1.6; }
+
+    /* ─── CTA ─── */
+    .cta-section {
+      padding: 100px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(0,255,200,0.08) 0%, transparent 70%);
+    }
+    .cta-glow-ring {
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,255,200,0.1);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: ringExpand 4s ease-in-out infinite;
+    }
+    .cta-glow-ring:nth-child(2) { width: 800px; height: 800px; animation-delay: -2s; }
+    @keyframes ringExpand {
+      0%, 100% { opacity: 0.5; transform: translate(-50%,-50%) scale(1); }
+      50% { opacity: 0; transform: translate(-50%,-50%) scale(1.1); }
+    }
+    .cta-content { position: relative; z-index: 1; }
+    .cta-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 900;
+      margin-bottom: 16px;
+    }
+    .cta-title .neon {
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 20px rgba(0,255,200,0.5));
+    }
+    .cta-desc { color: var(--text-secondary); font-size: 16px; margin-bottom: 40px; max-width: 500px; margin-left: auto; margin-right: auto; line-height: 1.8; }
+    .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .cta-btns .btn-primary, .cta-btns .btn-outline { padding: 16px 36px; font-size: 15px; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 70px 0 30px;
+      border-top: 1px solid var(--border);
+      position: relative;
+    }
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 400px; height: 1px;
+      background: var(--gradient-main);
+      box-shadow: var(--glow);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 50px;
+      margin-bottom: 50px;
+    }
+    .footer-brand-name {
+      font-family: 'Orbitron', monospace;
+      font-size: 22px;
+      font-weight: 900;
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 14px;
+      display: block;
+    }
+    .footer-brand p { color: var(--text-secondary); font-size: 14px; line-height: 1.8; margin-bottom: 24px; }
+    .social-row { display: flex; gap: 10px; }
+    .social-btn {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-glass);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      font-size: 16px;
+      transition: all 0.3s var(--transition);
+      backdrop-filter: blur(10px);
+    }
+    .social-btn:hover { border-color: var(--border-strong); color: var(--neon-cyan); box-shadow: var(--glow); background: rgba(0,255,200,0.1); transform: translateY(-2px); }
+    .footer-col h4 {
+      font-family: 'Orbitron', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--neon-cyan);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 10px; }
+    .footer-col a { color: var(--text-secondary); font-size: 14px; transition: all 0.3s; display: inline-flex; align-items: center; gap: 6px; }
+    .footer-col a:hover { color: var(--neon-cyan); padding-left: 4px; }
+    .footer-bottom {
+      padding-top: 30px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .footer-bottom .neon-text { color: var(--neon-cyan); }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s var(--transition), transform 0.7s var(--transition);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+
+    /* Mobile nav drawer */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      top: 78px; left: 0; right: 0;
+      background: rgba(5,12,24,0.97);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(24px);
+      z-index: 999;
+      padding: 20px 24px;
+      flex-direction: column;
+      gap: 4px;
+      transform: translateY(-10px);
+      opacity: 0;
+      transition: all 0.3s var(--transition);
+    }
+    [data-theme="light"] .mobile-nav { background: rgba(240,244,255,0.97); }
+    .mobile-nav.open { display: flex; transform: translateY(0); opacity: 1; }
+    .mobile-nav a {
+      padding: 12px 16px;
+      border-radius: 10px;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      border: 1px solid transparent;
+      transition: all 0.3s;
+    }
+    .mobile-nav a:hover { border-color: var(--border); color: var(--neon-cyan); background: var(--bg-glass); }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .why-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 900px) {
+      .hero-content { grid-template-columns: 1fr; gap: 50px; text-align: center; }
+      .hero-desc { margin: 0 auto 36px; }
+      .hero-cta { justify-content: center; }
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .nav-links, .btn-primary.nav-cta { display: none; }
+      .mobile-toggle { display: block; }
+    }
+    @media (max-width: 640px) {
+      .services-grid, .courses-grid { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <!-- BG Effects -->
+  <div class="bg-canvas">
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+  </div>
+  <div class="bg-grid"></div>
+
+  <!-- NAVBAR -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="brand">
+        <div class="logo-wrap"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="brand-text">
+          <div class="name">AJSecurity</div>
+          <div class="tagline">Defend · Detect · Dominate</div>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#courses">Courses</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeBtn" title="Toggle Theme">
+          <i class="fa-solid fa-moon" id="themeIcon"></i>
+        </button>
+        <a href="contact.html" class="btn-primary nav-cta">Contact Us</a>
+        <div class="mobile-toggle" id="mobileToggle"><i class="fa-solid fa-bars"></i></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#home">Home</a>
+    <a href="#services">Services</a>
+    <a href="#courses">Courses</a>
+    <a href="#about">About</a>
+    <a href="contact.html" style="color:var(--neon-cyan);">Contact Us</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="container hero-content">
+      <div class="hero-text">
+        <div class="hero-eyebrow"><span class="dot"></span> Next-Gen Cyber Defense</div>
+        <h1 class="hero-title">
+          <span class="line1">Master the Art</span>
+          <span class="line2">of Cybersecurity</span>
+          <span class="line3">& Dominate</span>
+        </h1>
+        <p class="hero-desc">Join AJSecurity Institute for industry-leading ethical hacking training, penetration testing, and enterprise security solutions. Build a career in the most demanded field of technology.</p>
+        <div class="hero-cta">
+          <a href="contact.html" class="btn-primary"><i class="fa-solid fa-rocket" style="margin-right:8px"></i>Start Learning</a>
+          <a href="contact.html" class="btn-outline"><i class="fa-solid fa-briefcase" style="margin-right:8px"></i>Hire Experts</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="terminal-card">
+          <div class="terminal-header">
+            <div class="terminal-dots">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="terminal-title">ajsec@terminal ~ %</div>
+          </div>
+          <div class="terminal-body">
+            <span class="t-line"><span class="t-prompt">▶ </span><span class="t-cmd">./scan_network --target 192.168.1.0/24</span></span>
+            <span class="t-line"><span class="t-output">[+] Scanning network range...</span></span>
+            <span class="t-line"><span class="t-output">[+] Discovered 12 live hosts</span></span>
+            <span class="t-line"><span class="t-warn">[!] Port 22 open on 192.168.1.4</span></span>
+            <span class="t-line"><span class="t-danger">[!] Vuln CVE-2024-1337 detected</span></span>
+            <span class="t-line"><span class="t-prompt">▶ </span><span class="t-cmd">./exploit --module ssh_auth_bypass</span></span>
+            <span class="t-line"><span class="t-output">[+] Payload deployed successfully</span></span>
+            <span class="t-line"><span class="t-output" style="color:var(--neon-cyan)">[✔] Shell established — root@target</span></span>
+            <span class="t-line"><span class="t-prompt">▶ </span><span class="t-cursor"></span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats" id="stats">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item reveal"><span class="stat-num" data-count="500">0</span><div class="stat-label">Students Trained</div></div>
+        <div class="stat-item reveal reveal-delay-1"><span class="stat-num" data-count="50">0</span><div class="stat-label">Corporate Clients</div></div>
+        <div class="stat-item reveal reveal-delay-2"><span class="stat-num" data-count="15">0</span><div class="stat-label">Expert Instructors</div></div>
+        <div class="stat-item reveal reveal-delay-3"><span class="stat-num" data-count="98">0</span><div class="stat-label">Success Rate %</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge reveal"><i class="fa-solid fa-shield-halved"></i> Our Services</div>
+        <h2 class="section-title reveal reveal-delay-1">Comprehensive <span class="highlight">Security</span> Solutions</h2>
+        <p class="section-desc reveal reveal-delay-2">Protecting individuals and enterprises with cutting-edge cybersecurity services and world-class training.</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card reveal">
+          <div class="service-icon-wrap"><i class="fa-solid fa-graduation-cap"></i></div>
+          <h3>Cybersecurity Training</h3>
+          <p>Industry-recognized courses from beginner to advanced levels with hands-on labs and real-world attack scenarios.</p>
+          <i class="fa-solid fa-arrow-right service-arrow"></i>
+        </div>
+        <div class="service-card reveal reveal-delay-1">
+          <div class="service-icon-wrap"><i class="fa-solid fa-bug"></i></div>
+          <h3>Penetration Testing</h3>
+          <p>Identify vulnerabilities before attackers do. Comprehensive red-team assessments for your entire infrastructure.</p>
+          <i class="fa-solid fa-arrow-right service-arrow"></i>
+        </div>
+        <div class="service-card reveal reveal-delay-2">
+          <div class="service-icon-wrap"><i class="fa-solid fa-lock"></i></div>
+          <h3>Security Audits</h3>
+          <p>Thorough evaluation of your security posture with detailed reports and actionable remediation roadmaps.</p>
+          <i class="fa-solid fa-arrow-right service-arrow"></i>
+        </div>
+        <div class="service-card reveal reveal-delay-1">
+          <div class="service-icon-wrap"><i class="fa-solid fa-code"></i></div>
+          <h3>Secure Development</h3>
+          <p>Build security into applications from day one with secure coding practices, SAST/DAST, and code reviews.</p>
+          <i class="fa-solid fa-arrow-right service-arrow"></i>
+        </div>
+        <div class="service-card reveal reveal-delay-2">
+          <div class="service-icon-wrap"><i class="fa-solid fa-shield-virus"></i></div>
+          <h3>Incident Response</h3>
+          <p>24/7 emergency response team to contain breaches, preserve evidence, and restore business operations fast.</p>
+          <i class="fa-solid fa-arrow-right service-arrow"></i>
+        </div>
+        <div class="service-card reveal reveal-delay-3">
+          <div class="service-icon-wrap"><i class="fa-solid fa-users-gear"></i></div>
+          <h3>Security Consulting</h3>
+          <p>Strategic vCISO-level guidance to architect robust security frameworks tailored to your specific risk profile.</p>
+          <i class="fa-solid fa-arrow-right service-arrow"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COURSES -->
+  <section id="courses" class="courses-section">
+    <div class="container" style="position:relative;z-index:1">
+      <div class="section-header">
+        <div class="section-badge reveal"><i class="fa-solid fa-book-open"></i> Courses</div>
+        <h2 class="section-title reveal reveal-delay-1">Popular <span class="highlight">Certifications</span></h2>
+        <p class="section-desc reveal reveal-delay-2">Learn from industry experts and earn globally recognized certifications in cybersecurity.</p>
+      </div>
+      <div class="courses-grid">
+        <div class="course-card reveal">
+          <div class="course-icon-wrap"><i class="fa-solid fa-terminal"></i></div>
+          <div class="course-info">
+            <h3>Ethical Hacking Masterclass</h3>
+            <p>Penetration testing, vulnerability assessment, and ethical hacking techniques used by elite professionals.</p>
+            <div class="course-meta">
+              <span class="course-tag"><i class="fa-solid fa-clock"></i> 12 Weeks</span>
+              <span class="course-tag"><i class="fa-solid fa-signal"></i> Intermediate</span>
+              <span class="course-tag"><i class="fa-solid fa-certificate"></i> Certified</span>
+            </div>
+          </div>
+        </div>
+        <div class="course-card reveal reveal-delay-1">
+          <div class="course-icon-wrap"><i class="fa-solid fa-network-wired"></i></div>
+          <div class="course-info">
+            <h3>Network Security Fundamentals</h3>
+            <p>Master firewalls, IDS/IPS, VPNs, and secure network architecture from the ground up.</p>
+            <div class="course-meta">
+              <span class="course-tag"><i class="fa-solid fa-clock"></i> 8 Weeks</span>
+              <span class="course-tag"><i class="fa-solid fa-signal"></i> Beginner</span>
+              <span class="course-tag"><i class="fa-solid fa-certificate"></i> Certified</span>
+            </div>
+          </div>
+        </div>
+        <div class="course-card reveal reveal-delay-1">
+          <div class="course-icon-wrap"><i class="fa-solid fa-cloud"></i></div>
+          <div class="course-info">
+            <h3>Cloud Security Professional</h3>
+            <p>Secure AWS, Azure, and GCP environments with hands-on cloud security implementation labs.</p>
+            <div class="course-meta">
+              <span class="course-tag"><i class="fa-solid fa-clock"></i> 10 Weeks</span>
+              <span class="course-tag"><i class="fa-solid fa-signal"></i> Advanced</span>
+              <span class="course-tag"><i class="fa-solid fa-certificate"></i> Certified</span>
+            </div>
+          </div>
+        </div>
+        <div class="course-card reveal reveal-delay-2">
+          <div class="course-icon-wrap"><i class="fa-solid fa-mobile-screen"></i></div>
+          <div class="course-info">
+            <h3>Mobile App Security</h3>
+            <p>Identify and exploit vulnerabilities in Android and iOS applications using real-world methodologies.</p>
+            <div class="course-meta">
+              <span class="course-tag"><i class="fa-solid fa-clock"></i> 6 Weeks</span>
+              <span class="course-tag"><i class="fa-solid fa-signal"></i> Intermediate</span>
+              <span class="course-tag"><i class="fa-solid fa-certificate"></i> Certified</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE US -->
+  <section id="about">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge reveal"><i class="fa-solid fa-star"></i> Why AJSecurity</div>
+        <h2 class="section-title reveal reveal-delay-1">Excellence in <span class="highlight">Cyber Defense</span></h2>
+        <p class="section-desc reveal reveal-delay-2">We deliver world-class cybersecurity education and services that transform careers and protect organizations.</p>
+      </div>
+      <div class="why-grid">
+        <div class="why-card reveal">
+          <i class="why-icon fa-solid fa-chalkboard-user"></i>
+          <h4>Expert Instructors</h4>
+          <p>Learn from certified professionals with real-world offensive and defensive experience.</p>
+        </div>
+        <div class="why-card reveal reveal-delay-1">
+          <i class="why-icon fa-solid fa-laptop-code"></i>
+          <h4>Hands-on Labs</h4>
+          <p>Practice in safe, simulated environments with real enterprise-grade tools and techniques.</p>
+        </div>
+        <div class="why-card reveal reveal-delay-2">
+          <i class="why-icon fa-solid fa-award"></i>
+          <h4>Industry Certification</h4>
+          <p>Earn globally recognized certifications that employers worldwide actively seek out.</p>
+        </div>
+        <div class="why-card reveal reveal-delay-3">
+          <i class="why-icon fa-solid fa-headset"></i>
+          <h4>24/7 Support</h4>
+          <p>A dedicated support team and community to guide you every step of your journey.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-glow-ring"></div>
+    <div class="cta-glow-ring"></div>
+    <div class="container cta-content">
+      <div class="section-badge reveal" style="margin-bottom:24px"><i class="fa-solid fa-rocket"></i> Get Started</div>
+      <h2 class="cta-title reveal reveal-delay-1">Ready to Start Your<br><span class="neon">Cybersecurity Journey?</span></h2>
+      <p class="cta-desc reveal reveal-delay-2">Join thousands of professionals who have transformed their careers and organizations with AJSecurity Institute.</p>
+      <div class="cta-btns reveal reveal-delay-3">
+        <a href="contact.html" class="btn-primary"><i class="fa-solid fa-user-graduate" style="margin-right:8px"></i>Enroll Now</a>
+        <a href="contact.html" class="btn-outline"><i class="fa-solid fa-phone" style="margin-right:8px"></i>Talk to Expert</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="footer-brand-name"><i class="fa-solid fa-shield-halved"></i> AJSecurity</span>
+          <p>Leading cybersecurity institute providing world-class training and security solutions. Empowering individuals and organizations to defend against modern cyber threats.</p>
+          <div class="social-row">
+            <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="social-btn"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#" class="social-btn"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#" class="social-btn"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#" class="social-btn"><i class="fa-brands fa-discord"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="#home"><i class="fa-solid fa-chevron-right" style="font-size:10px"></i> Home</a></li>
+            <li><a href="#services"><i class="fa-solid fa-chevron-right" style="font-size:10px"></i> Services</a></li>
+            <li><a href="#courses"><i class="fa-solid fa-chevron-right" style="font-size:10px"></i> Courses</a></li>
+            <li><a href="contact.html"><i class="fa-solid fa-chevron-right" style="font-size:10px"></i> Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Courses</h4>
+          <ul>
+            <li><a href="#"><i class="fa-solid fa-chevron-right" style="font-size:10px"></i> Ethical Hacking</a></li>
+            <li><a href="#"><i class="fa-solid fa-chevron-right" style="font-size:10px"></i> Network Security</a></li>
+            <li><a href="#"><i class="fa-solid fa-chevron-right" style="font-size:10px"></i> Cloud Security</a></li>
+            <li><a href="#"><i class="fa-solid fa-chevron-right" style="font-size:10px"></i> Mobile Security</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:info@ajsecurity.com"><i class="fa-solid fa-envelope"></i> info@ajsecurity.com</a></li>
+            <li><a href="https://wa.me/8801234567890"><i class="fa-brands fa-whatsapp"></i> +880 1234 567890</a></li>
+            <li><a href="#"><i class="fa-solid fa-location-dot"></i> Dhaka, Bangladesh</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2025 <span class="neon-text">AJSecurity</span>. All Rights Reserved.</span>
+        <span class="neon-text">Defend · Detect · Dominate</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Theme Toggle
+    const html = document.documentElement;
+    const themeBtn = document.getElementById('themeBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const saved = localStorage.getItem('ajsec-theme') || 'dark';
+    html.setAttribute('data-theme', saved);
+    updateThemeIcon(saved);
+
+    themeBtn.addEventListener('click', () => {
+      const cur = html.getAttribute('data-theme');
+      const next = cur === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('ajsec-theme', next);
+      updateThemeIcon(next);
+    });
+    function updateThemeIcon(theme) {
+      themeIcon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    }
+
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 30);
+    });
+
+    // Mobile Nav
+    const mobileToggle = document.getElementById('mobileToggle');
+    const mobileNav = document.getElementById('mobileNav');
+    mobileToggle.addEventListener('click', () => {
+      mobileNav.classList.toggle('open');
+      const icon = mobileToggle.querySelector('i');
+      icon.className = mobileNav.classList.contains('open') ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+    });
+    mobileNav.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        mobileNav.classList.remove('open');
+        mobileToggle.querySelector('i').className = 'fa-solid fa-bars';
+      });
+    });
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      });
+    });
+
+    // Scroll Reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+
+    // Count-up animation
+    const statNums = document.querySelectorAll('.stat-num');
+    const countObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const el = e.target;
+          const target = parseInt(el.getAttribute('data-count'));
+          let current = 0;
+          const step = target / 60;
+          const timer = setInterval(() => {
+            current += step;
+            if (current >= target) { el.textContent = target + '+'; clearInterval(timer); }
+            else el.textContent = Math.floor(current) + '+';
+          }, 16);
+          countObserver.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+    statNums.forEach(el => countObserver.observe(el));
+  </script>
+</body>
+</html>
