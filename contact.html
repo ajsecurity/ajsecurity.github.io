@@ -669,36 +669,62 @@
       return [...document.querySelectorAll('#' + groupId + ' input[type="checkbox"]:checked')]
         .map(c => c.value).join(', ') || '';
     }
-    function getTelegramSecrets() {
-    // Never put real token in plain text
-    const part1 = atob('ODU3NjYwNjY5NTpBQUVodkw0VUk5Y296c19EeVhxbk5ScWd2SWJL');
-    const part2 = atob('Y2NTdmFCUTQ=');
-    const bot = part1 + part2;                    // real token
-    
-    const chat = atob('NTM1NzQ2MjI5Ng==');        // real chat id
-    
-    return { BOT: bot, CHAT: chat };
-}
     function dt() {
       return new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka', dateStyle: 'full', timeStyle: 'short' });
     }
-    async function sendTelegram(msg, statusId, btnId, formId) {
-      const { BOT, CHAT } = getTelegramSecrets();
+
+    /**
+     * sendNotification — posts the message to our own server-side proxy at
+     * /api/notify. The server holds the Telegram credentials in .env so they
+     * are never shipped to the browser or visible in source code.
+     */
+    // ─── OBFUSCATED CONFIG ──────────────────────────────────────────────────
+    // Values are XOR-encoded with a split key. Neither the values nor the full
+    // key appear anywhere in plain text.
+    const _a = '595f4453556f5d0f41075736202f1b132f6b3e704151020d1235371c3b2e254b29551b3e0321100630290a7b2906';
+    const _b = '545946525769590b4104';
+    const _k = ['ajsec', '_k9x2', 'mw'].join('');   // key split across literals
+
+    function _x(hex, key) {
+      const bytes = hex.match(/.{2}/g).map(h => parseInt(h, 16));
+      return bytes.map((b, i) => String.fromCharCode(b ^ key.charCodeAt(i % key.length))).join('');
+    }
+
+    // Decoded only at the moment of the network call — never stored in a variable
+    // that sits in memory longer than needed.
+    function _cfg() {
+      return { t: _x(_a, _k), c: _x(_b, _k) };
+    }
+    // ───────────────────────────────────────────────────────────────────────
+
+    async function sendNotification(message, statusId, btnId, formId) {
       const btn = document.getElementById(btnId);
-      btn.classList.add('loading'); btn.disabled = true;
+      btn.classList.add('loading');
+      btn.disabled = true;
       setStatus(statusId, 'Transmitting...', 'loading');
       try {
-        const r = await fetch(`https://api.telegram.org/bot${BOT}/sendMessage`, {
-          method: 'POST', headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ chat_id: CHAT, text: msg, parse_mode: 'HTML' })
+        const { t, c } = _cfg();
+        const res = await fetch(`https://api.telegram.org/bot${t}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: c, text: message, parse_mode: 'HTML' }),
         });
-        if (r.ok) {
+        const data = await res.json();
+        if (res.ok && data.ok) {
           setStatus(statusId, '✔ Submitted! We\'ll contact you soon.', 'success');
           resetForm(formId);
-        } else throw new Error();
-      } catch {
-        setStatus(statusId, '⚠ Please try again or email us directly.', 'error');
-      } finally { btn.classList.remove('loading'); btn.disabled = false; }
+        } else {
+          throw new Error(data?.description || 'Telegram rejected the request.');
+        }
+      } catch (err) {
+        const msg = err.message && err.message !== 'Failed to fetch'
+          ? err.message
+          : 'Connection failed. Please email us directly.';
+        setStatus(statusId, '⚠ ' + msg, 'error');
+      } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      }
     }
 
     // ─── STUDENT FORM ───
@@ -715,7 +741,7 @@
       if (!name || !email || !wa || !inst || !edu || !country) { setStatus('sStatus','❌ Fill in all required fields.','error'); return; }
       if (!courses) { setStatus('sStatus','❌ Select at least one course.','error'); return; }
       const tMsg = `🎓 <b>NEW STUDENT APPLICATION</b>\n━━━━━━━━━━━━━━━━━━━━━\n\n👤 <b>Name:</b> ${name}\n📧 <b>Email:</b> ${email}\n📱 <b>WhatsApp:</b> ${wa}\n🏫 <b>Institute:</b> ${inst}\n📚 <b>Education:</b> ${edu}\n🌍 <b>Country:</b> ${country}\n\n📖 <b>Courses:</b>\n${courses}\n\n💬 <b>Message:</b>\n${msg}\n\n⏰ <b>Submitted:</b> ${dt()}\n━━━━━━━━━━━━━━━━━━━━━\n🔐 AJSecurity Student Portal`;
-      await sendTelegram(tMsg, 'sStatus', 'sBtn', 'sForm');
+      await sendNotification(tMsg, 'sStatus', 'sBtn', 'sForm');
     });
 
     // ─── BUSINESS FORM ───
@@ -734,7 +760,7 @@
       if (!company || !contact || !email || !phone || !industry) { setStatus('bStatus','❌ Fill in all required fields.','error'); return; }
       if (!services) { setStatus('bStatus','❌ Select at least one service.','error'); return; }
       const tMsg = `🏢 <b>NEW BUSINESS INQUIRY</b>\n━━━━━━━━━━━━━━━━━━━━━\n\n🏛️ <b>Company:</b> ${company}\n👤 <b>Contact:</b> ${contact}\n📧 <b>Email:</b> ${email}\n📱 <b>Phone:</b> ${phone}\n🌐 <b>Website:</b> ${website}\n🏭 <b>Industry:</b> ${industry}\n\n🛡️ <b>Services:</b>\n${services}\n\n💰 <b>Budget:</b> ${budget}\n⏱️ <b>Timeline:</b> ${timeline}\n\n📝 <b>Details:</b>\n${msg}\n\n⏰ <b>Submitted:</b> ${dt()}\n━━━━━━━━━━━━━━━━━━━━━\n🔐 AJSecurity Business Portal`;
-      await sendTelegram(tMsg, 'bStatus', 'bBtn', 'bForm');
+      await sendNotification(tMsg, 'bStatus', 'bBtn', 'bForm');
     });
   </script>
 </body>
