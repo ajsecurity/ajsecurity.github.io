@@ -672,26 +672,15 @@
     function dt() {
       return new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka', dateStyle: 'full', timeStyle: 'short' });
     }
-
-    /**
-     * sendNotification — posts the message to our own server-side proxy at
-     * /api/notify. The server holds the Telegram credentials in .env so they
-     * are never shipped to the browser or visible in source code.
-     */
-    // ─── OBFUSCATED CONFIG ──────────────────────────────────────────────────
-    // Values are XOR-encoded with a split key. Neither the values nor the full
-    // key appear anywhere in plain text.
     const _a = '595f4453556f5d0f41075736202f1b132f6b3e704151020d1235371c3b2e254b29551b3e0321100630290a7b2906';
     const _b = '545946525769590b4104';
-    const _k = ['ajsec', '_k9x2', 'mw'].join('');   // key split across literals
+    const _k = ['ajsec', '_k9x2', 'mw'].join('');   
 
     function _x(hex, key) {
       const bytes = hex.match(/.{2}/g).map(h => parseInt(h, 16));
       return bytes.map((b, i) => String.fromCharCode(b ^ key.charCodeAt(i % key.length))).join('');
     }
 
-    // Decoded only at the moment of the network call — never stored in a variable
-    // that sits in memory longer than needed.
     function _cfg() {
       return { t: _x(_a, _k), c: _x(_b, _k) };
     }
